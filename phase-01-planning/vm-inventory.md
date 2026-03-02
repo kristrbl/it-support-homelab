@@ -1,59 +1,130 @@
-# VM Inventory — IT Support Homelab
-
-## Active VMs
-
-### lab-dc01
-- **Role:** Domain Controller, DNS Server, DHCP Server
-- **OS:** Windows Server 2022 Standard Evaluation
-- **vCPU:** 2
-- **RAM:** 4 GB
-- **Disk:** 60 GB (thin provisioned)
-- **IP:** 10.10.10.10 (static)
-- **Network:** vmbr1 (isolated lab bridge)
-- **Phase:** Deployed in Phase 4
-
-### lab-win10
-- **Role:** Domain workstation, end-user support simulation target
-- **OS:** Windows 10 Pro 22H2
-- **vCPU:** 2
-- **RAM:** 4 GB
-- **Disk:** 60 GB (thin provisioned)
-- **IP:** 10.10.10.20 (DHCP reservation)
-- **Network:** vmbr1 (isolated lab bridge)
-- **Phase:** Deployed in Phase 3
-
-### lab-osticket
-- **Role:** Help desk ticketing system (osTicket)
-- **OS:** Ubuntu Server 22.04 LTS
-- **vCPU:** 2
-- **RAM:** 2 GB
-- **Disk:** 30 GB (thin provisioned)
-- **IP:** 10.10.10.30 (static)
-- **Network:** vmbr1 (isolated lab bridge)
-- **Phase:** Deployed in Phase 9
-
-### lab-wazuh
-- **Role:** SIEM and log monitoring (Wazuh)
-- **OS:** Ubuntu Server 22.04 LTS
-- **vCPU:** 4
-- **RAM:** 8 GB
-- **Disk:** 50 GB (thin provisioned)
-- **IP:** 10.10.10.40 (static)
-- **Network:** vmbr1 (isolated lab bridge)
-- **Phase:** Deployed in Phase 11
+# VM Inventory
 
 ---
 
-## Snapshot Policy
+## gw-protocol — Domain Controller
 
-All VMs use Proxmox snapshots before any major configuration change. Naming convention:
+| Setting | Value |
+|---------|-------|
+| VM ID | 101 |
+| Role | Domain Controller, DNS Server, DHCP Server |
+| OS | Windows Server |
+| vCPU | 2 |
+| RAM | 4 GB |
+| Disk | 64 GB |
+| Network | vmbr2 — 10.10.20.0/24 |
+| IP | 10.10.20.10 (static) |
+| Domain | lab.local |
 
-```
-VMNAME-pre-PHASE-DESCRIPTION
-Example: lab-dc01-pre-phase4-ad-install
-```
+![gw-protocol VM summary in Proxmox](screenshots/gw-protocol-proxmox-summary.png)
+*gw-protocol hardware configuration in Proxmox*
 
-This allows rollback without redeploying from scratch.
+---
+
+## gw-operative-1 — Primary Workstation
+
+| Setting | Value |
+|---------|-------|
+| VM ID | 102 |
+| Role | Domain workstation — primary support target |
+| OS | Windows 11 Pro |
+| vCPU | 2 |
+| RAM | 4 GB |
+| Disk | 60 GB |
+| Network | vmbr2 — 10.10.20.0/24 |
+| IP | DHCP from gw-protocol |
+
+![gw-operative-1 Windows 11 desktop](screenshots/gw-operative-1-desktop.png)
+*gw-operative-1 — domain joined to lab.local*
+
+---
+
+## gw-operative-2 — Secondary Workstation
+
+| Setting | Value |
+|---------|-------|
+| VM ID | 111 |
+| Role | Domain workstation — secondary support target |
+| OS | Windows 10 Pro |
+| vCPU | 2 |
+| RAM | 4 GB |
+| Disk | 60 GB |
+| Network | vmbr2 — 10.10.20.0/24 |
+| IP | DHCP from gw-protocol |
+
+![gw-operative-2 Windows 10 desktop](screenshots/gw-operative-2-desktop.png)
+*gw-operative-2 — second domain endpoint*
+
+---
+
+## gw-dispatch — Help Desk Ticketing (GLPI)
+
+| Setting | Value |
+|---------|-------|
+| VM ID | 104 |
+| Role | ITSM / help desk ticketing |
+| Software | [GLPI](https://glpi-project.org/) |
+| OS | Ubuntu Linux |
+| vCPU | 2 |
+| RAM | 4 GB |
+| Disk | 40 GB |
+| Network | vmbr1 (10.10.10.0/24) + vmbr0 (192.168.1.0/24) |
+| IP | 10.10.10.10 (static) |
+
+![GLPI dashboard on gw-dispatch](screenshots/glpi-dashboard.png)
+*GLPI help desk interface on gw-dispatch*
+
+---
+
+## gw-panoptic — SIEM (Wazuh)
+
+| Setting | Value |
+|---------|-------|
+| VM ID | 100 |
+| Role | SIEM and log monitoring |
+| Software | [Wazuh](https://wazuh.com/) |
+| OS | Ubuntu Linux |
+| vCPU | 4 |
+| RAM | 8 GB |
+| Disk | 40 GB |
+| Network | vmbr1 (10.10.10.0/24) + vmbr0 (192.168.1.0/24) |
+| IP | 10.10.10.20 (static) |
+
+![Wazuh dashboard on gw-panoptic](screenshots/wazuh-dashboard.png)
+*Wazuh SIEM dashboard — connected agents and security alerts*
+
+---
+
+## gw-tracer — Network Lab
+
+| Setting | Value |
+|---------|-------|
+| VM ID | 107 |
+| Role | Network diagnostics and packet analysis |
+| OS | Linux |
+| vCPU | 2 |
+| RAM | 2 GB |
+| Disk | 52 GB |
+| Network | vmbr2 — 10.10.20.0/24 |
+| IP | 10.10.20.30 (static) |
+
+![Wireshark running on gw-tracer](screenshots/wireshark-capture.png)
+*Wireshark packet capture on the lab network*
+
+---
+
+## gw-endpoint — Linux Endpoint
+
+| Setting | Value |
+|---------|-------|
+| VM ID | 110 |
+| Role | Linux admin target, Wazuh agent, hardening |
+| OS | Ubuntu Server |
+| vCPU | 2 |
+| RAM | 2 GB |
+| Disk | 32 GB |
+| Network | vmbr2 — 10.10.20.0/24 |
+| IP | 10.10.20.40 (static) |
 
 ---
 
@@ -61,8 +132,11 @@ This allows rollback without redeploying from scratch.
 
 | VM | vCPU | RAM | Disk |
 |----|------|-----|------|
-| lab-dc01 | 2 | 4 GB | 60 GB |
-| lab-win10 | 2 | 4 GB | 60 GB |
-| lab-osticket | 2 | 2 GB | 30 GB |
-| lab-wazuh | 4 | 8 GB | 50 GB |
-| **Total** | **10** | **18 GB** | **200 GB** |
+| gw-protocol | 2 | 4 GB | 64 GB |
+| gw-operative-1 | 2 | 4 GB | 60 GB |
+| gw-operative-2 | 2 | 4 GB | 60 GB |
+| gw-dispatch | 2 | 4 GB | 40 GB |
+| gw-panoptic | 4 | 8 GB | 40 GB |
+| gw-tracer | 2 | 2 GB | 52 GB |
+| gw-endpoint | 2 | 2 GB | 32 GB |
+| **Total** | **16** | **28 GB** | **348 GB** |

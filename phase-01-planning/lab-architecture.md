@@ -1,71 +1,72 @@
-# Lab Architecture — IT Support Homelab
+# Phase 1 — Lab Architecture
 
 ## Overview
 
-This lab simulates a small business IT environment. It is built on a Proxmox hypervisor running on dedicated home server hardware. All VMs are isolated on a dedicated internal network bridge separate from the main LAN.
+Virtualized IT support lab built on Proxmox VE, simulating a small business environment. Infrastructure includes an Active Directory domain, domain-joined workstations, a help desk ticketing system, and a SIEM for log monitoring.
 
 ---
 
 ## Hypervisor
 
-| Item | Detail |
-|------|--------|
-| Platform | Proxmox VE 8.x |
-| Host | Dedicated home server |
-| CPU | x86_64, virtualization extensions enabled |
+| Item | Details |
+|------|---------|
+| Platform | [Proxmox VE 8.x](https://www.proxmox.com/en/proxmox-virtual-environment/overview) |
+| Host | gw-nexus (192.168.1.50) |
 | RAM | 32 GB |
-| Storage | SSD pool for VM disks |
+| Storage | SSD pool — thin provisioned |
+| Total VMs | 15 across 4 network zones |
 
 ---
 
-## VM Inventory
-
-| VM Name | Role | OS | vCPU | RAM | Disk | IP Address |
-|---------|------|----|------|-----|------|------------|
-| lab-dc01 | Domain Controller / DNS / DHCP | Windows Server 2022 Eval | 2 | 4 GB | 60 GB | 10.10.10.10 |
-| lab-win10 | Domain workstation / support target | Windows 10 Pro 22H2 | 2 | 4 GB | 60 GB | 10.10.10.20 (DHCP) |
-| lab-osticket | Help desk ticketing system | Ubuntu Server 22.04 LTS | 2 | 2 GB | 30 GB | 10.10.10.30 |
-| lab-wazuh | SIEM / log monitoring (Phase 11) | Ubuntu Server 22.04 LTS | 4 | 8 GB | 50 GB | 10.10.10.40 |
-
-**Total estimated resources:** 10 vCPU / 18 GB RAM / 200 GB storage
+![Proxmox dashboard showing gw-nexus node and all VMs](screenshots/proxmox-dashboard.png)
+*gw-nexus — Proxmox node summary showing host resources and VM list*
 
 ---
 
-## Domain Details
+## Lab VM Inventory
 
-| Setting | Value |
-|---------|-------|
-| Domain name | lab.local |
-| Domain Controller | lab-dc01 (10.10.10.10) |
-| DNS Server | 10.10.10.10 |
-| DHCP Range | 10.10.10.100 – 10.10.10.200 |
-| Default Gateway | N/A (isolated network, no internet routing) |
-
----
-
-## Design Decisions
-
-- **Isolated network bridge (vmbr1):** Keeps lab DHCP and DNS experiments from affecting the main LAN. Lab VMs cannot reach the internet directly.
-- **Windows Server 2022 Evaluation:** Free 180-day license from Microsoft Evaluation Center. Sufficient for all lab phases.
-- **osTicket:** Free, open source ITSM platform. Mirrors ticketing tools used in real help desk environments (ServiceNow, Zendesk, Freshdesk).
-- **Wazuh:** Free SIEM platform. Provides real log aggregation and alerting experience relevant to both IT Support and SOC roles.
+| VM | Role | OS | vCPU | RAM | Network |
+|----|------|----|------|-----|---------|
+| gw-protocol | Domain Controller, DNS, DHCP | Windows Server | 2 | 4 GB | vmbr2 — 10.10.20.0/24 |
+| gw-operative-1 | Primary domain workstation | Windows 11 Pro | 2 | 4 GB | vmbr2 — 10.10.20.0/24 |
+| gw-operative-2 | Secondary domain workstation | Windows 10 Pro | 2 | 4 GB | vmbr2 — 10.10.20.0/24 |
+| gw-dispatch | ITSM / help desk ([GLPI](https://glpi-project.org/)) | Ubuntu Linux | 2 | 4 GB | vmbr1 — 10.10.10.0/24 |
+| gw-panoptic | SIEM / log monitoring ([Wazuh](https://wazuh.com/)) | Ubuntu Linux | 4 | 8 GB | vmbr1 — 10.10.10.0/24 |
+| gw-tracer | Network diagnostics | Linux | 2 | 2 GB | vmbr2 — 10.10.20.0/24 |
+| gw-endpoint | Linux endpoint / hardening | Ubuntu Server | 2 | 2 GB | vmbr2 — 10.10.20.0/24 |
 
 ---
 
-## Phases Overview
+![Proxmox VM list](screenshots/proxmox-vm-list.png)
+*Proxmox VM list — lab VMs across vmbr1 and vmbr2 network segments*
+
+---
+
+## Snapshot Policy
+
+Snapshots are taken before any major configuration change using the following naming convention:
+
+```
+VMNAME-pre-PHASE-DESCRIPTION
+Example: gw-protocol-pre-phase4-ad-install
+```
+
+---
+
+## Phase Roadmap
 
 | Phase | Focus Area |
 |-------|-----------|
-| 1 | Lab planning and architecture (this document) |
-| 2 | Proxmox hypervisor validation and lab network setup |
-| 3 | Windows 10 workstation support |
-| 4 | Windows Server 2022 and Active Directory |
-| 5 | Domain join, users, groups, and permissions |
+| 1 | Lab planning and architecture |
+| 2 | Proxmox validation and network configuration |
+| 3 | Windows workstation support |
+| 4 | Active Directory, DNS, DHCP |
+| 5 | Domain join, users, groups, permissions |
 | 6 | Group Policy and workstation management |
 | 7 | Network troubleshooting |
-| 8 | Remote administration and support tools |
-| 9 | osTicket help desk setup |
+| 8 | Remote support tools |
+| 9 | GLPI help desk ticketing |
 | 10 | Software deployment and troubleshooting |
-| 11 | Log analysis, Event Viewer, and Wazuh SIEM |
+| 11 | Log analysis, Event Viewer, Wazuh SIEM |
 | 12 | Capstone support scenarios |
-| 13 | GitHub publishing and resume refinement |
+| 13 | GitHub publishing and resume finalization |

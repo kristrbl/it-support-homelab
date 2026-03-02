@@ -1,0 +1,73 @@
+<mxfile host="diagrams.net" version="21.0.0">
+  <diagram name="IT Support Homelab Network" id="lab-network">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Proxmox Host -->
+        <mxCell id="2" value="Proxmox Host&#xa;gw-nexus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;fontColor=#ffffff;strokeColor=#4a90d9;fontSize=13;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="430" y="40" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- vmbr0 -->
+        <mxCell id="3" value="vmbr0&#xa;Main LAN&#xa;192.168.1.0/24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a4a6b;fontColor=#ffffff;strokeColor=#4a90d9;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="180" y="180" width="160" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- vmbr1 -->
+        <mxCell id="4" value="vmbr1 — Lab Internal Bridge&#xa;10.10.10.0/24&#xa;⚠️ Isolated — no internet routing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6b1a1a;fontColor=#ffffff;strokeColor=#d94a4a;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="180" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- lab-dc01 -->
+        <mxCell id="5" value="🗄️ lab-dc01&#xa;10.10.10.10 (static)&#xa;Windows Server 2022&#xa;Domain Controller · DNS · DHCP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a6b2d;fontColor=#ffffff;strokeColor=#4ad94a;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="180" y="350" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- lab-win10 -->
+        <mxCell id="6" value="💻 lab-win10&#xa;10.10.10.20 (DHCP)&#xa;Windows 10 Pro 22H2&#xa;Domain Workstation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a4a6b;fontColor=#ffffff;strokeColor=#4a90d9;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="350" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- lab-osticket -->
+        <mxCell id="7" value="🎫 lab-osticket&#xa;10.10.10.30 (static)&#xa;Ubuntu Server 22.04&#xa;osTicket Help Desk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6b4a1a;fontColor=#ffffff;strokeColor=#d9a44a;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="660" y="350" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- lab-wazuh -->
+        <mxCell id="8" value="🔍 lab-wazuh&#xa;10.10.10.40 (static)&#xa;Ubuntu Server 22.04&#xa;Wazuh SIEM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4a1a6b;fontColor=#ffffff;strokeColor=#a44ad9;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="900" y="350" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- DHCP Pool label -->
+        <mxCell id="9" value="DHCP Pool: 10.10.10.100 – 10.10.10.200" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#aaaaaa;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="480" width="320" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Edges: Host to bridges -->
+        <mxCell id="10" edge="1" source="2" target="3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="11" edge="1" source="2" target="4" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Edges: vmbr1 to VMs -->
+        <mxCell id="12" edge="1" source="4" target="5" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13" edge="1" source="4" target="6" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="14" edge="1" source="4" target="7" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="15" edge="1" source="4" target="8" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
