@@ -1,5 +1,7 @@
 # IT Support Homelab
 
+[![GitHub](https://img.shields.io/badge/GitHub-kristrbl-181717?style=flat&logo=github)](https://github.com/kristrbl)
+
 A hands-on homelab built on a bare-metal Proxmox hypervisor to develop and document real IT support, systems administration, and security monitoring skills.
 
 Each phase is fully documented with configuration steps, screenshots, and troubleshooting notes — built to mirror what entry-level IT roles encounter in production environments.
