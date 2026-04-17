@@ -65,3 +65,9 @@ Both segments are isolated from the home network. Lab VMs have no direct interne
 
 `Proxmox VE` `Windows Server 2022` `Active Directory` `DNS` `DHCP` `Group Policy`
 `Windows 10/11` `Ubuntu Server` `Wazuh` `osTicket` `Wireshark` `nmap` `RDP` `PowerShell` `Bash`
+
+---
+
+## Contributors
+
+- [@kristrbl](https://github.com/kristrbl)
